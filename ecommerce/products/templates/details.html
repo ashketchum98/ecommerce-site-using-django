@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+
+{% if empty %}
+
+<h3 style='padding: 40px;'>No Such Product Exists.</h3>
+
+{% endif %}
+
+{% for item in qs %}
+<br><div class="container-fluid" >
+  <div class="row no-gutters">
+    <div class="col-md-5">
+      <img src="{{ item.img.url }}" class="card-img" alt="{{ item.name }}" width="640px" height="480px">
+    </div>
+    <div class="col-md-7">
+      <div class="card-body">
+        <h3 class="card-title">{{ item.name }}</h3>
+        <p class="card-text"><strong>Description:</strong> {{ item.description }}</p>
+        <p class="card-text" style="color: red;"><strong>Price:</strong> {{ item.price }} rs</p>
+      {% include "update_cart.html" with item=item cart=cart %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

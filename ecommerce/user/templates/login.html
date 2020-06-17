@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+  
+{% block content %}  
+<div class="container">
+	{% if user.is_authenticated %}
+	<br><h2>Already Logged In</h2>
+	{% endif %}
+	{% if not user.is_authenticated %}
+	{% if messages %}
+	{% for message in messages %}
+	<br><h2>{{ message }}</h2>
+	{% endfor %}
+	{% endif %}
+	<div class="col">
+		<br><br>
+		<h2>Login</h2><br>
+		<form method="POST" action="/login/">
+		{% csrf_token %}
+		Username: <input type="text" name="username" placeholder="Enter Username" class="form-control" required>
+		<br>Password: <input type="password" name="password" placeholder="Enter Password" class="form-control" required>
+		<br><input type="submit" value="Login" class="btn btn-primary">
+		</form>
+		</div>
+	{% endif %}	
+</div>
+{% endblock %}

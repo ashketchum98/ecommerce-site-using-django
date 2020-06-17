@@ -1,0 +1,27 @@
+
+{% extends 'base.html' %}
+
+{% block content %} 
+<br>
+<div class="container-fluid content-row">
+    <div class="row">
+{% for item in qs %}
+      <div class="col-sm-12 col-lg-4 pt-4">
+      <div class="card" style="width: 25rem;">
+        <img src="{{ item.img.url }}" class="card-img-top" alt="{{ item.name }}">
+        <div class="card-body">
+        <a href='{{ item.get_url }}' style='color: black;'>
+        <h3 class="card-title">{{ item.name }}</h3>
+        </a>
+        <h4 style="color: red;">Price: {{ item.price }} rs</h4>
+          <p class="card-text">{{ item.description|linebreaks|truncatewords:20 }}</p>
+        {% include "update_cart.html" with item=item cart=cart %}
+        </div>
+      </div>
+      </div>
+{% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+

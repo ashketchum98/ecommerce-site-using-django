@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<h2 style="align: center">{{ message }}</h2>
+{% endfor %}
+{% endif %}
+{% if user.is_authenticated %}
+<br>
+<div class="container-fluid">
+  <img class="img-fluid" src='{% static "images/avatar.jpeg" %}' alt="{{ user }}" style="width: 10%; height: 10%; align: left;" ><br><br>
+  <h1>{{ user }}</h1><br>
+  <p>Name : {{ fullname }} </p>
+  <p class="title">Email : {{ user.email }}</p>
+  <p>Date of Birth : {{ dob }} </p>
+  <p>Address : {{ address }} </p>
+  <p>Mobile No. : {{ mobile }} </p>
+ <p><a href="/update/" ><button class="btn btn-primary">Update</button></a></p>
+</div>
+
+{% endif %}
+{% if not user.is_authenticated %}
+<h1><center><br>Login First to View your profile</center></h1>
+{% endif %}
+{% endblock %}

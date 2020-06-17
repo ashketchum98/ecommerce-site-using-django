@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Grab It!</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+  
+<script src="https://js.stripe.com/v3/"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.3/jsrender.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<style>
+
+  /**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+.StripeElement {
+  box-sizing: border-box;
+
+  height: 40px;
+
+  padding: 10px 12px;
+
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: white;
+
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+
+
+
+div.gallery {
+    border: 1px solid #ccc;
+}
+
+div.gallery:hover {
+    border: 1px solid #777;
+}
+
+div.gallery img {
+    width: 100%;
+    height: auto;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.responsive {
+    padding: 0 6px;
+    float: left;
+    width: 24.99999%;
+}
+
+@media only screen and (max-width: 700px) {
+    .responsive {
+        width: 49.99999%;
+        margin: 6px 0;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .responsive {
+        width: 100%;
+    }
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">Grab It - An Ecommerce Website</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+    <form class="form-inline my-2 my-lg-0" action="/search/">
+      <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search" required>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+<li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+	  <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Products
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="/electronics/">Electronics</a>
+          <a class="dropdown-item" href="/clothes/">Clothes</a>
+          <a class="dropdown-item" href="/furniture/">Furniture</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/about/">About Us</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/contact/">Contact Us</a>
+      </li>   
+    </ul>
+    <ul class="navbar-nav navbar-collapse justify-content-end">
+	<li class="nav-item"><a class="nav-link" href="/cart/"><span class="navbar-cart-count">{{ request.session.cart_items }}</span><i class="fa fa-shopping-cart" aria-hidden="true"></i>  Cart</a></li>
+	{% if not user.is_authenticated %}
+      <li class="nav-item"><a class="nav-link" href="/signup/"> Sign Up</a></li>
+      <li class="nav-item"><a class="nav-link" href="/login/"> Login</a></li>
+	{% else %}
+      <li class="nav-item"><a class="nav-link" href="/profile/"> Profile</a></li>
+      <li class="nav-item"><a class="nav-link" href="/logout/"> Logout</a></li>
+	{% endif %}
+	 
+	</ul>
+  </div>  
+</nav>
+
+
+{% block content %}
+{% endblock %}
+
+<script type="text/javascript">
+  
+  $(document).ready(function(){
+
+      var productForm = $(".form-product-ajax")
+
+      productForm.submit(function(event){
+
+        event.preventDefault();
+        console.log("form is not sending")
+        var thisForm = $(this);
+        var actionEndpoint = thisForm.attr("action");
+        var httpMethod = thisForm.attr("method");
+        var formData = thisForm.serialize();
+        console.log(formData)
+
+        $.ajax({
+          url: actionEndpoint,
+          method: httpMethod,
+          data: formData,
+          success: function(data){
+            console.log("success")
+            console.log(data)
+            var submitSpan = thisForm.find(".submit-span")
+            if(data.added){
+              submitSpan.html("<button class='btn btn-primary'>Remove from Cart</button><br><br></center>")
+            } else{
+              submitSpan.html("<button class='btn btn-primary'>Add to Cart</button><br><br></center>")
+            }
+            var navbarCount = $(".navbar-cart-count")
+            navbarCount.text(data.cartItemCount)
+
+            var currentPath = window.location.href
+            if(currentPath.indexOf("cart") != -1){
+              refreshCart()
+            }
+          },
+          error: function(errorData){
+            console.log("error")
+            console.log(errorData)
+          }
+        })
+
+      })
+
+      function refreshCart(){
+        console.log("in cart home")
+        var cartTable = $(".cart-table")
+        var cartBody = cartTable.find(".cart-body")
+        var productRows = cartBody.find(".cart-product")
+
+        var refreshCartUrl = "/api/cart/"
+        var refreshCartMethod = "GET";
+        var data = {};
+
+        $.ajax({
+          url: refreshCartUrl,
+          method: refreshCartMethod,
+          data: data,
+          success: function(data){
+            var hiddenCartItemRemoveForm = $(".cart-item-remove-form")
+            var currentUrl = window.location.href;
+
+            if(data.products.length > 0){
+              productRows.html(" ")
+              i = data.products.length
+              $.each(data.products, function(index, value){
+                var newCartItemRemove = hiddenCartItemRemoveForm.clone()
+                newCartItemRemove.css("display","block")
+                newCartItemRemove.find(".cart-item-product-id").val(value.id)
+                cartBody.prepend("<tr><th scope=\"row\">" + i + "</th><td><a href='" + value.url + "'>"+ value.name + "</a>" + newCartItemRemove.html() + "</td><td>"
+                  + value.price + "</td></tr>")
+                i --
+              })
+              cartBody.find(".cart-total").text(data.total)
+            } else{
+              window.location.href = currentUrl;
+            }
+          },
+          error: function(errorData){
+            console.log("error")
+            console.log(errorData)
+          }
+        })
+
+      }
+
+  })
+
+</script>
+
+{% block javascript %}
+
+{% endblock %}
+
+{% include 'js_template.html' %}
+{% include 'js.html' %}
+
+</body>
+</html>

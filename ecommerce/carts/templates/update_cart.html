@@ -1,0 +1,13 @@
+<form class="form-product-ajax" method='POST' action='/cart/update_details/'>
+    {% csrf_token %}
+    <input type="hidden" name="product_id" value="{{ item.id }}" />
+
+	<button class="btn btn-danger">Buy</button>
+	<span class="submit-span">
+  {% if item in cart.products.all %} 
+	<button class="btn btn-primary">Remove from Cart</button><br><br></center>
+  {% else %}
+    <button class="btn btn-primary">Add to Cart</button><br><br></center>
+  {% endif %}
+	</span>
+</form>

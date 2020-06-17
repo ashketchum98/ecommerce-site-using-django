@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<br>
+<div class="container">
+
+
+{% if not billing_profile %}
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<p class="lead">Login</p>
+			<form method="POST" action="/login/">
+			{% csrf_token %}
+			<input type="hidden" name="next" value="/cart/checkout/">
+			Username: <input type="text" name="username" placeholder="Enter Username" class="form-control" required>
+			<br>Password: <input type="password" name="password" placeholder="Enter Password" class="form-control" required>
+			<br><input type="submit" value="Login" class="btn btn-primary">
+			</form>
+		</div>
+		<div class="col-12 col-md-6">
+			<p class="lead">Continue as Guest</p>
+			<form method="POST" action="/guest_register/">
+			{% csrf_token %}
+			<input type="hidden" name="next" value="/cart/checkout/">
+			Email: <input type="email" name="email" placeholder="Enter Email" class="form-control" required>
+			<br><input type="submit" value="Submit" class="btn btn-primary">
+			</form>
+		</div>
+	</div>
+{% else %}
+	{% if not object.shipping_address %}
+	<div class="row">
+		<div class="col-12">
+		<p class="lead">Shipping Address</p>
+		<hr/>
+		</div>
+		<div class="col-6">
+		{% include 'form.html' with next_url=request.build_absolute_uri form=address_form address_type='shipping' %}
+		</div>
+
+		<div class="col-6">
+			{% include 'prev_addresses.html' with next_url=request.build_absolute_uri address_qs=address_qs address_type='shipping' %}
+		</div>
+	</div>
+
+	{% elif not object.billing_address %}
+	<div class="row">
+		<div class="col-12">
+		<p class="lead">Billing Address</p>
+		<hr/>
+		</div>
+		<div class="col-6">
+		{% include 'form.html' with next_url=request.build_absolute_uri form=address_form address_type='billing' %}
+		</div>
+
+		<div class="col-6">
+			{% include 'prev_addresses.html' with next_url=request.build_absolute_uri address_qs=address_qs address_type='billing' %}
+		</div>
+	</div>
+
+	{% else %}
+
+		{% if not has_card %}
+
+			<div class="col-10 col-md-6 mx-auto">
+			<h1 class="my-3">Add Payment Method</h1>
+
+			<div class="stripe-payment-form" data-token="{{ publish_key }}" data-next-url="{{ request.build_absolute_uri }}" data-btn-title="Add New Method"></div>
+
+			</div>
+
+		{% else %}
+			<h1>Final Checkout</h1><br/>
+			<p>Cart Items: {% for product in object.cart.products.all %} {{ product }}{% if not forloop.last %},{% endif %} {% endfor %}</p>
+			<p>Shipping Address: {{ object.shipping_address.get_address }}</p>
+			<p>Billing Address: {{ object.billing_address.get_address }}</p>
+			<p>Payment Method: {{ billing_profile.default_card }} (<a href="{{ billing_profile.get_payment_method_url }}?next={{ request.build_absolute_uri }}">Change</a>)</p>
+			<p>Cart Total: {{ object.cart.totalval }}</p>
+			<p>Shipping Total: {{ object.shipping_total }}</p>
+			<p>Order Total: {{ object.total }}</p>
+			<form method="POST" action=""> {% csrf_token %}
+			<button type="submit" class="btn btn-primary">Checkout</button>
+			</form>
+		{% endif %}
+	{% endif %}
+{% endif %}
+</div>
+{% endblock %}
